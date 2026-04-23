@@ -2,89 +2,192 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <title>AutoConnect - Multi-Clientes</title>
+    <title>Cirocar - Atendimento Virtual</title>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; display: flex; gap: 20px; padding: 20px; background-color: #f0f2f5; }
-        .painel { background: white; padding: 20px; border-radius: 8px; width: 50%; box-shadow: 0 2px 4px rgba(0,0,0,0.1); display: flex; flex-direction: column; }
+        /* === TEMA DARK MODE - CIROCAR === */
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background-color: #121212; 
+            color: #ffffff; 
+            margin: 0; 
+            padding: 20px; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+        }
         
-        button { padding: 10px; cursor: pointer; background: #0056b3; color: white; border: none; border-radius: 4px; font-weight: bold; }
-        button:hover:not(:disabled) { background: #004494; }
+        .cabecalho {
+            width: 100%;
+            max-width: 1200px;
+            background-color: #000000; 
+            text-align: center;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(204, 255, 0, 0.1); 
+            box-sizing: border-box;
+            border-bottom: 3px solid #ccff00; 
+        }
         
-        .btn-acao { background: #28a745; margin-top: 10px; }
-        .btn-encerrar { background: #dc3545 !important; } 
+        .logo {
+            max-height: 80px;
+            object-fit: contain;
+        }
+
+        .container-paineis {
+            display: flex;
+            gap: 20px;
+            width: 100%;
+            max-width: 1200px;
+        }
+
+        .painel { 
+            flex: 1; 
+            background: #1e1e1e; 
+            padding: 20px; 
+            border-radius: 8px; 
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5); 
+            display: flex; 
+            flex-direction: column; 
+            border: 1px solid #333;
+        }
         
-        button:disabled, input:disabled, select:disabled { opacity: 0.5; cursor: not-allowed; }
+        h2 { color: #ccff00; margin-top: 0; }
+
+        /* Estilo dos Botões */
+        button { 
+            padding: 10px; 
+            cursor: pointer; 
+            background: #ccff00; 
+            color: #000000; 
+            border: none; 
+            border-radius: 4px; 
+            font-weight: bold; 
+            text-transform: uppercase;
+            font-size: 0.9em;
+            transition: 0.2s;
+        }
+        button:hover:not(:disabled) { background: #b3e600; box-shadow: 0 0 10px rgba(204, 255, 0, 0.4); }
         
-        .log { background: #e9ecef; padding: 10px; margin-top: 15px; border-radius: 4px; min-height: 150px; max-height: 200px; overflow-y: auto; font-size: 0.9em; }
-        .chat-area { margin-top: 15px; padding-top: 15px; border-top: 1px solid #eee; display: flex; gap: 10px; }
-        input, select { padding: 10px; border: 1px solid #ccc; border-radius: 4px; }
+        .btn-acao { background: #00d26a; color: #000; margin-top: 10px; }
+        .btn-acao:hover:not(:disabled) { background: #00b35a; }
+        
+        .btn-encerrar { background: #dc3545 !important; color: white !important; } 
+        
+        /* Itens desativados (texto alterado para branco) */
+        button:disabled { opacity: 1; background: #444; color: #ffffff; cursor: not-allowed; }
+        input:disabled, select:disabled { opacity: 0.5; cursor: not-allowed; }
+        
+        /* Caixas de Texto e Selects */
+        input, select { 
+            padding: 10px; 
+            background-color: #2a2a2a; 
+            color: #ffffff; 
+            border: 1px solid #444; 
+            border-radius: 4px; 
+        }
+        input:focus, select:focus { outline: none; border-color: #ccff00; }
+        
+        /* Textos de placeholder em branco */
+        ::placeholder { color: #ffffff; opacity: 0.8; }
+        
+        /* Área do Chat */
+        .log { 
+            background: #0a0a0a; 
+            padding: 10px; 
+            margin-top: 15px; 
+            border-radius: 4px; 
+            border: 1px solid #333;
+            min-height: 150px; 
+            max-height: 200px; 
+            overflow-y: auto; 
+            font-size: 0.95em; 
+        }
+        
+        .chat-area { margin-top: 15px; padding-top: 15px; border-top: 1px solid #333; display: flex; gap: 10px; }
         .campo-chat { flex-grow: 1; }
         .controles { margin-bottom: 15px; display: flex; gap: 10px; flex-wrap: wrap; }
         
-        .secao-servicos { margin-top: 20px; padding: 10px; background: #fff3cd; border: 1px solid #ffeeba; border-radius: 4px; }
-        .secao-servicos h3 { margin-top: 0; font-size: 1em; color: #856404; }
-        #lista-servicos { list-style: none; padding: 0; margin: 0; font-size: 0.85em; }
-        #lista-servicos li { padding: 5px 0; border-bottom: 1px solid #ffeeba; }
+        /* Destaques e Serviços */
+        .secao-servicos { 
+            margin-top: 20px; 
+            padding: 15px; 
+            background: #111; 
+            border: 1px solid #ccff00; 
+            border-radius: 4px; 
+        }
+        .secao-servicos h3 { margin-top: 0; font-size: 1.1em; color: #ccff00; }
+        #lista-servicos { list-style: none; padding: 0; margin: 0; font-size: 0.9em; }
+        #lista-servicos li { padding: 8px 0; border-bottom: 1px solid #333; }
+        #lista-servicos li:last-child { border-bottom: none; }
 
-        .msg-sistema { color: #6c757d; font-style: italic; font-size: 0.8em; text-align: center; margin: 5px 0; }
-        .destaque { background-color: #e2e3e5; padding: 5px; border-radius: 4px; font-weight: bold; }
+        .destaque { background-color: #2a2a2a; padding: 10px; border-radius: 4px; font-weight: bold; border: 1px solid #444; }
     </style>
 </head>
 <body>
 
-    <div class="painel" id="painel-cliente">
-        <h2>👤 Cliente</h2>
-        
-        <div class="controles">
-            <input type="text" id="nome-cliente" placeholder="Seu Nome (Ex: João)">
-            <select id="tipo-problema" disabled>
-                <option value="Freio fazendo barulho">Freios</option>
-                <option value="Motor superaquecendo">Motor</option>
-                <option value="Suspensão batendo">Suspensão</option>
-            </select>
-            <button id="btn-solicitar" onclick="solicitarOrcamento()" disabled>1. Solicitar</button>
-        </div>
-        
-        <button id="btn-aprovar" class="btn-acao" onclick="aprovarOrcamento()" disabled>3. Aprovar Orçamento</button>
-        
-        <div class="chat-area">
-            <button id="btn-toggle-cliente" onclick="alternarChat('Cliente', 'input-cliente', 'btn-enviar-cliente', 'btn-toggle-cliente')">Iniciar Atendimento</button>
-            <input type="text" id="input-cliente" class="campo-chat" placeholder="Chat..." disabled onkeypress="verificarEnter(event, 'Cliente', 'input-cliente')">
-            <button id="btn-enviar-cliente" onclick="enviarChat('Cliente', 'input-cliente')" disabled>Enviar</button>
-        </div>
-
-        <div id="log-cliente" class="log"></div>
+    <div class="cabecalho">
+        <img src="logo.jpeg" alt="Cirocar Mecânica Automotiva" class="logo">
     </div>
 
-    <div class="painel" id="painel-oficina">
-        <h2>🔧 Oficina Mecânica</h2>
+    <div class="container-paineis">
         
-        <div class="controles destaque">
-            <label for="cliente-alvo" style="font-size: 0.9em;">Responder a:</label>
-            <select id="cliente-alvo" style="flex-grow: 1;" disabled>
-                <option value="">Aguardando pedidos...</option>
-            </select>
+        <div class="painel" id="painel-cliente">
+            <h2>👤 Painel do Cliente</h2>
+            
+            <div class="controles">
+                <input type="text" id="nome-cliente" placeholder="Seu Nome (Ex: João)">
+                <select id="tipo-problema" disabled>
+                    <option value="Freio fazendo barulho">Freios</option>
+                    <option value="Motor superaquecendo">Motor</option>
+                    <option value="Suspensão batendo">Suspensão</option>
+                    <option value="Revisão geral">Revisão Geral</option>
+                </select>
+                <button id="btn-solicitar" onclick="solicitarOrcamento()" disabled>1. Solicitar</button>
+            </div>
+            
+            <button id="btn-aprovar" class="btn-acao" onclick="aprovarOrcamento()" disabled>3. Aprovar Orçamento</button>
+            
+            <div class="chat-area">
+                <button id="btn-toggle-cliente" onclick="alternarChat('Cliente', 'input-cliente', 'btn-enviar-cliente', 'btn-toggle-cliente')">Iniciar Atendimento</button>
+                <input type="text" id="input-cliente" class="campo-chat" placeholder="Chat..." disabled onkeypress="verificarEnter(event, 'Cliente', 'input-cliente')">
+                <button id="btn-enviar-cliente" onclick="enviarChat('Cliente', 'input-cliente')" disabled>Enviar</button>
+            </div>
+
+            <div id="log-cliente" class="log"></div>
         </div>
 
-        <div class="controles">
-            <input type="number" id="valor-orcamento" placeholder="Valor R$" style="width: 100px;" disabled>
-            <button id="btn-enviar-prop" onclick="enviarOrcamento()" disabled>2. Enviar Proposta</button>
-        </div>
-        
-        <button id="btn-confirmar" class="btn-acao" onclick="confirmarServico()" disabled>4. Confirmar Serviço</button>
-        
-        <div class="chat-area">
-            <button id="btn-toggle-oficina" onclick="alternarChat('Oficina', 'input-oficina', 'btn-enviar-oficina', 'btn-toggle-oficina')">Iniciar Atendimento</button>
-            <input type="text" id="input-oficina" class="campo-chat" placeholder="Chat..." disabled onkeypress="verificarEnter(event, 'Oficina', 'input-oficina')">
-            <button id="btn-enviar-oficina" onclick="enviarChat('Oficina', 'input-oficina')" disabled>Enviar</button>
+        <div class="painel" id="painel-oficina">
+            <h2>🔧 Cirocar Oficina</h2>
+            
+            <div class="controles destaque">
+                <label for="cliente-alvo" style="font-size: 0.9em; color: #ffffff;">Responder a:</label>
+                <select id="cliente-alvo" style="flex-grow: 1;" disabled>
+                    <option value="">Aguardando pedidos...</option>
+                </select>
+            </div>
+
+            <div class="controles">
+                <input type="number" id="valor-orcamento" placeholder="Valor R$" style="width: 100px;" disabled>
+                <button id="btn-enviar-prop" onclick="enviarOrcamento()" disabled>2. Enviar Proposta</button>
+            </div>
+            
+            <button id="btn-confirmar" class="btn-acao" onclick="confirmarServico()" disabled>4. Confirmar Serviço</button>
+            
+            <div class="chat-area">
+                <button id="btn-toggle-oficina" onclick="alternarChat('Oficina', 'input-oficina', 'btn-enviar-oficina', 'btn-toggle-oficina')">Iniciar Atendimento</button>
+                <input type="text" id="input-oficina" class="campo-chat" placeholder="Chat..." disabled onkeypress="verificarEnter(event, 'Oficina', 'input-oficina')">
+                <button id="btn-enviar-oficina" onclick="enviarChat('Oficina', 'input-oficina')" disabled>Enviar</button>
+            </div>
+
+            <div id="log-oficina" class="log"></div>
+
+            <div class="secao-servicos">
+                <h3>📋 Serviços Aceitos</h3>
+                <ul id="lista-servicos"></ul>
+            </div>
         </div>
 
-        <div id="log-oficina" class="log"></div>
-
-        <div class="secao-servicos">
-            <h3>📋 Serviços Aceitos</h3>
-            <ul id="lista-servicos"></ul>
-        </div>
     </div>
 
     <script>
@@ -92,70 +195,55 @@
 
         function adicionarNoLog(elemento, texto) {
             const div = document.getElementById(elemento);
-            div.innerHTML += `<div style="margin-bottom: 5px;">${texto}</div>`;
+            texto = texto.replace("⚠️", "<span style='color: #ffc107;'>⚠️</span>");
+            texto = texto.replace("💰", "<span style='color: #00d26a;'>💰</span>");
+            texto = texto.replace("✅", "<span style='color: #ccff00;'>✅</span>");
+            texto = texto.replace("🚗", "<span style='color: #17a2b8;'>🚗</span>");
+            
+            div.innerHTML += `<div style="margin-bottom: 8px; padding-bottom: 5px; border-bottom: 1px solid #222;">${texto}</div>`;
             div.scrollTop = div.scrollHeight; 
         }
 
-        // === RECEBENDO MENSAGENS ===
         socket.onmessage = function(event) {
             const dados = JSON.parse(event.data);
             const meuNome = document.getElementById("nome-cliente").value;
 
-            // REGRA DE OURO: Se a mensagem tem um destinatário, e não for eu, eu ignoro! (Exceto a oficina)
-            if (dados.destinatario && dados.destinatario !== meuNome && dados.acao !== "solicitar_orcamento") {
-                // A Oficina sempre recebe (pois ela gerencia), mas clientes ignoram mensagens de outros clientes
-                if(document.getElementById("btn-toggle-oficina").innerText === "Iniciar Atendimento") {
-                     // Se a oficina estiver fechada, não faz nada
-                }
-            }
-
-            // 1. Cliente pede orçamento
             if(dados.acao === "solicitar_orcamento") {
-                adicionarNoLog("log-oficina", `⚠️ <b>${dados.cliente}</b> solicita: ${dados.problema}`);
-                
-                // Adiciona o cliente na lista suspensa da Oficina
+                adicionarNoLog("log-oficina", `⚠️ <b style="color:#ccff00;">${dados.cliente}</b> solicita: ${dados.problema}`);
                 const selectAlvo = document.getElementById("cliente-alvo");
-                if(selectAlvo.options[0].value === "") { selectAlvo.remove(0); } // Remove o "Aguardando..."
-                
+                if(selectAlvo.options[0].value === "") { selectAlvo.remove(0); }
                 const opt = document.createElement("option");
                 opt.value = dados.cliente;
-                opt.dataset.problema = dados.problema; // Guarda o problema escondido
+                opt.dataset.problema = dados.problema;
                 opt.text = `${dados.cliente} (${dados.problema})`;
                 selectAlvo.appendChild(opt);
             } 
-            // 2. Oficina envia orçamento
             else if(dados.acao === "enviar_orcamento" && dados.destinatario === meuNome) {
                 adicionarNoLog("log-cliente", `💰 <b>Proposta da Oficina:</b> R$ ${dados.valor}`);
             }
-            // 3. Cliente aprova
             else if(dados.acao === "aprovar_orcamento") {
-                adicionarNoLog("log-oficina", `✅ <b>${dados.cliente}</b> aprovou o valor!`);
+                adicionarNoLog("log-oficina", `✅ <b style="color:#ccff00;">${dados.cliente}</b> aprovou o valor!`);
             }
-            // 4. Oficina confirma serviço
             else if(dados.acao === "confirmar_demanda" && dados.destinatario === meuNome) {
-                adicionarNoLog("log-cliente", `🚗 <b>Oficina confirmou:</b> ${dados.mensagem}`);
+                adicionarNoLog("log-cliente", `🚗 <b style="color:#ccff00;">Cirocar confirmou:</b> ${dados.mensagem}`);
             }
-            // 4.1 Oficina registra na lista dela
             else if(dados.acao === "registrar_lista") {
                 registrarServicoNaLista(dados.cliente, dados.problema);
             }
-            // 5. Chat livre (Agora direcionado)
             else if(dados.acao === "chat") {
-                const msg = `💬 <b>${dados.remetente}:</b> ${dados.texto}`;
-                // Se for a oficina enviando, o cliente checa se é pra ele
+                const corRemetente = dados.remetente === "Oficina" ? "#ccff00" : "#fff";
+                const msg = `💬 <b style="color:${corRemetente};">${dados.remetente}:</b> ${dados.texto}`;
                 if (dados.remetente === "Oficina") {
                     if (dados.destinatario === meuNome) adicionarNoLog("log-cliente", msg);
-                    adicionarNoLog("log-oficina", msg + ` <i>(para ${dados.destinatario})</i>`);
-                } 
-                // Se for o cliente enviando
-                else {
+                    // Texto do destinatário alterado para branco (#ffffff)
+                    adicionarNoLog("log-oficina", msg + ` <i style="color:#ffffff; font-size: 0.85em;">(para ${dados.destinatario})</i>`);
+                } else {
                     if (dados.remetente === meuNome) adicionarNoLog("log-cliente", msg);
                     adicionarNoLog("log-oficina", msg);
                 }
             }
         };
 
-        // === ENVIANDO MENSAGENS ===
         function solicitarOrcamento() {
             const nome = document.getElementById("nome-cliente").value;
             if(!nome) { alert("Digite seu nome!"); return; }
@@ -165,8 +253,7 @@
 
         function enviarOrcamento() {
             const clienteSelecionado = document.getElementById("cliente-alvo").value;
-            if(!clienteSelecionado) { alert("Nenhum cliente selecionado!"); return; }
-            
+            if(!clienteSelecionado) { alert("Selecione um cliente!"); return; }
             const valor = document.getElementById("valor-orcamento").value || "A avaliar";
             socket.send(JSON.stringify({ acao: "enviar_orcamento", valor: valor, destinatario: clienteSelecionado }));
         }
@@ -179,28 +266,18 @@
         function confirmarServico() { 
             const selectAlvo = document.getElementById("cliente-alvo");
             const clienteAlvo = selectAlvo.value;
-            
-            if(!clienteAlvo) { alert("Selecione um cliente para confirmar!"); return; }
-            
+            if(!clienteAlvo) { alert("Selecione um cliente!"); return; }
             const problemaAlvo = selectAlvo.options[selectAlvo.selectedIndex].dataset.problema;
-
-            // Avisa o cliente
             socket.send(JSON.stringify({ acao: "confirmar_demanda", mensagem: "Serviço agendado!", destinatario: clienteAlvo })); 
-            
-            // Avisa a oficina para registrar na lista
             socket.send(JSON.stringify({ acao: "registrar_lista", cliente: clienteAlvo, problema: problemaAlvo }));
-            
-            // Remove o cliente da lista de pendentes da oficina
             selectAlvo.remove(selectAlvo.selectedIndex);
-            if(selectAlvo.length === 0) {
-                selectAlvo.innerHTML = '<option value="">Aguardando pedidos...</option>';
-            }
+            if(selectAlvo.length === 0) { selectAlvo.innerHTML = '<option value="">Aguardando pedidos...</option>'; }
         }
 
         function registrarServicoNaLista(cliente, problema) {
             const lista = document.getElementById("lista-servicos");
             const novoItem = document.createElement("li");
-            novoItem.innerHTML = `<b>${cliente}</b> - ${problema} ✅`;
+            novoItem.innerHTML = `<b style="color:#fff;">${cliente}</b> - ${problema} <span style="color:#ccff00;">✅</span>`;
             lista.appendChild(novoItem);
         }
 
@@ -209,13 +286,16 @@
             const btnToggle = document.getElementById(btnToggleId);
             const nomeInput = document.getElementById("nome-cliente");
             
-            if (remetente === 'Cliente' && !nomeInput.value) {
-                alert("Digite seu nome antes de iniciar!");
-                return;
+            if (remetente === 'Cliente' && input.disabled) {
+                if (!nomeInput.value) {
+                    alert("Digite seu nome antes de iniciar!");
+                    nomeInput.disabled = false;
+                    return;
+                }
             }
 
             let controles = remetente === 'Cliente' ? 
-                [document.getElementById('tipo-problema'), document.getElementById('btn-solicitar'), document.getElementById('btn-aprovar'), nomeInput] :
+                [document.getElementById('tipo-problema'), document.getElementById('btn-solicitar'), document.getElementById('btn-aprovar')] :
                 [document.getElementById('cliente-alvo'), document.getElementById('valor-orcamento'), document.getElementById('btn-enviar-prop'), document.getElementById('btn-confirmar')];
 
             if (input.disabled) {
@@ -224,12 +304,22 @@
                 controles.forEach(e => e.disabled = false);
                 btnToggle.innerText = "Encerrar Atendimento";
                 btnToggle.classList.add("btn-encerrar");
+                
+                if (remetente === 'Cliente') {
+                    nomeInput.disabled = true;
+                }
             } else {
                 input.disabled = true;
                 document.getElementById(btnEnviarId).disabled = true;
                 controles.forEach(e => e.disabled = true);
                 btnToggle.innerText = "Iniciar Atendimento";
                 btnToggle.classList.remove("btn-encerrar");
+
+                if (remetente === 'Cliente') {
+                    nomeInput.value = ""; 
+                    nomeInput.disabled = false; 
+                    document.getElementById("log-cliente").innerHTML = ""; 
+                }
             }
         }
 
@@ -238,13 +328,9 @@
             if (campo.value.trim() !== "") {
                 const clienteAlvo = document.getElementById("cliente-alvo").value;
                 const nomeCliente = document.getElementById("nome-cliente").value;
-                
-                // Se for a oficina mandando, direciona pro alvo. Se for o cliente, manda seu próprio nome
                 const dest = remetente === "Oficina" ? clienteAlvo : "Oficina";
                 const env = remetente === "Oficina" ? "Oficina" : nomeCliente;
-
-                if(remetente === "Oficina" && !clienteAlvo) { alert("Selecione um cliente para enviar mensagem!"); return; }
-
+                if(remetente === "Oficina" && !clienteAlvo) { alert("Selecione um cliente!"); return; }
                 socket.send(JSON.stringify({ acao: "chat", remetente: env, destinatario: dest, texto: campo.value }));
                 campo.value = ""; 
             }
