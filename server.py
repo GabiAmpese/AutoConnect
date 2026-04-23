@@ -2,9 +2,19 @@ import tornado.ioloop # Mantém o servidor rodando infinitamente
 import tornado.web # Lida com as rotas 
 import tornado.websocket # Tempo real
 import json # Importante: Precisamos do JSON para ler as ações!
+import os
 
 # Conjunto para guardar as abas/janelas conectadas
 conexoes_ativas = set()
+
+class MainHandler(tornado.web.RequestHandler):
+    def get(self):
+        # Renderiza a interface web que está na mesma pasta do script
+        try:
+            self.render("index.html")
+        except Exception as e:
+            self.set_status(404)
+            self.write(f"Erro: Arquivo index.html não encontrado na pasta do servidor. {e}")
 
 class AutoConnectHandler(tornado.websocket.WebSocketHandler): # classe que herda os poderes do tornado
     
@@ -32,9 +42,15 @@ class AutoConnectHandler(tornado.websocket.WebSocketHandler): # classe que herda
         return True
 
 def make_app():
+    # Obtém o caminho absoluto da pasta onde o server.py está localizado
+    caminho_projeto = os.path.dirname(os.path.abspath(__file__))
+    
     return tornado.web.Application([
+        (r"/", MainHandler),
         (r"/ws", AutoConnectHandler),
-    ])
+        # Fallback para arquivos estáticos (permite acessar localhost:8888/index.html se necessário)
+        (r"/(.*)", tornado.web.StaticFileHandler, {"path": caminho_projeto}),
+    ], template_path=caminho_projeto, debug=True)
 
 if __name__ == "__main__":
     app = make_app()
