@@ -1,7 +1,6 @@
 import tornado.ioloop # Mantém o servidor rodando infinitamente
 import tornado.web # Lida com as rotas 
 import tornado.websocket # Tempo real
-import json # Importante: Precisamos do JSON para ler as ações!
 import os
 
 # Conjunto para guardar as abas/janelas conectadas
@@ -18,12 +17,12 @@ class MainHandler(tornado.web.RequestHandler):
 
 class AutoConnectHandler(tornado.websocket.WebSocketHandler): # classe que herda os poderes do tornado
     
-    # 1. HANDSHAKE (Nova conexão)
+    # 1. HANDSHAKE (Nova conexão) ====================
     def open(self):
         conexoes_ativas.add(self)
         print("Novo usuário conectado ao AutoConnect!")
 
-    # 2. PERSISTÊNCIA (Recebendo mensagens)
+    # 2. PERSISTÊNCIA (Recebendo mensagens)  ====================
     def on_message(self, message):
         print(f"Mensagem bruta recebida: {message}")
         
@@ -32,7 +31,7 @@ class AutoConnectHandler(tornado.websocket.WebSocketHandler): # classe que herda
         for conexao in conexoes_ativas:
             conexao.write_message(message)
 
-    # 3. ENCERRAMENTO (Fechando conexão)
+    # 3. ENCERRAMENTO (Fechando conexão)  ====================
     def on_close(self):
         conexoes_ativas.remove(self)
         print("Usuário desconectado.")
