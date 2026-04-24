@@ -1,20 +1,20 @@
 import tornado.ioloop # Mantém o servidor rodando infinitamente
 import tornado.web # Cria as rotas HTTP
 import tornado.websocket # Comunicação em tempo real
+import json
 import os # Localiza os arquivos
 
 # Conjunto para guardar os usuário conectadas
 conexoes_ativas = set() # Utilizamos set pois não permite clientes repetidos
 
-class MainHandler(tornado.web.RequestHandler): # Abre a página web
-    def get(self): # Executa quando a porta 8888 é acessada
-        # Abre a interface web 
-        try:
-            self.render("index.html")
-        except Exception as e:
-            self.set_status(404)
-            self.write(f"Erro: Arquivo index.html não encontrado na pasta do servidor. {e}")
-
+class ClienteHandler(tornado.web.RequestHandler):
+    def get(self):
+        self.render("cliente.html")  
+        
+class OficinaHandler(tornado.web.RequestHandler):
+    def get(self):
+        self.render("oficina.html")
+        
 class AutoConnectHandler(tornado.websocket.WebSocketHandler): # classe que herda os poderes do tornado - implementa o ciclo do websocket
     
     # 1. HANDSHAKE (Nova conexão)
@@ -48,7 +48,9 @@ def make_app():
     
     # Diz qual código será executado para cada URL que o usuário acessar
     return tornado.web.Application([
-        (r"/", MainHandler),
+        (r"/", ClienteHandler),        
+        (r"/cliente", ClienteHandler), 
+        (r"/oficina", OficinaHandler),
         (r"/ws", AutoConnectHandler),
         (r"/(.*)", tornado.web.StaticFileHandler, {"path": caminho_projeto}),
     ], template_path=caminho_projeto, debug=True)
@@ -57,4 +59,6 @@ if __name__ == "__main__": # Execução do servidor
     app = make_app()
     app.listen(8888)
     print("🚗 Servidor AutoConnect rodando na porta 8888...")
+    print("👉 Cliente: http://localhost:8888/cliente")
+    print("👉 Oficina: http://localhost:8888/oficina")
     tornado.ioloop.IOLoop.current().start() # Mantém o servidor rodando
