@@ -53,11 +53,11 @@
             <button id="btn-enviar-cliente" onclick="enviarChat()" disabled>Enviar</button>
         </div>
 
-        <div id="log-cliente" class="log"></div> #histórico
+        <div id="log-cliente" class="log"></div> 
     </div>
 
     <script>
-        const socket = new WebSocket("ws://192.168.18.79:8888/ws"); //handshake
+        const socket = new WebSocket("ws://localhost:8888/ws"); //handshake
 
         //adiciona mensagens na tela
         function adicionarNoLog(texto) {

@@ -1,62 +1,60 @@
 import tornado.ioloop # Mantém o servidor rodando infinitamente
 import tornado.web # Cria as rotas HTTP
 import tornado.websocket # Comunicação em tempo real
-import json
+import json # Json utilizado para troca de dados entre Js e Python
 import os # Localiza os arquivos
 
-# Conjunto para guardar os usuário conectadas
-conexoes_ativas = set() # Utilizamos set pois não permite clientes repetidos
+# Conjunto para guardar os usuário conectados
+clientes_conectados = set() # Utilizamos set pois não permite clientes repetidos
 
-class ClienteHandler(tornado.web.RequestHandler):
+class PaginaCliente(tornado.web.RequestHandler): # Tornado lê o arquivo html e envia para navegador abrir o CLIENTE
     def get(self):
         self.render("cliente.html")  
         
-class OficinaHandler(tornado.web.RequestHandler):
+class PaginaOficina(tornado.web.RequestHandler): # Tornado lê o arquivo html e envia para navegador abrir a OFICINA
     def get(self):
         self.render("oficina.html")
         
-class AutoConnectHandler(tornado.websocket.WebSocketHandler): # classe que herda os poderes do tornado - implementa o ciclo do websocket
+class AutoConnectWebSocket(tornado.websocket.WebSocketHandler): # ciclo de vida do websocket
     
-    # 1. HANDSHAKE (Nova conexão)
-    def open(self): # Quando um novo usuário conecta, a função adiciona ele na lista
-        conexoes_ativas.add(self)
+    # 1. HANDSHAKE (Nova conexão) 
+    def open(self): # Quando um novo usuário conecta, adiciona ele no conjunto
+        clientes_conectados.add(self)
         print("Novo usuário conectado ao AutoConnect!")
 
-    # 2. PERSISTÊNCIA (Recebendo mensagens)  
-    def on_message(self, message):
-        print(f"Mensagem bruta recebida: {message}")
+    # 2. Recebendo mensagens
+    def on_message(self, mensagem):
+        print(f"Mensagem recebida: {mensagem}")
         
         # O servidor recebe a mensagem e repassa (BROADCAST) para todo mundo
-        # O html decide oq fazer com a mensagem
-        for conexao in conexoes_ativas:
-            conexao.write_message(message)
+        # O front-end decide para quem a mensagem deve ser enviada
+        for conexao in clientes_conectados:
+            conexao.write_message(mensagem)
 
     # 3. ENCERRAMENTO (Fechando conexão)
-    def on_close(self): # Remove o usuário da lista quando ele é desconectado
-        conexoes_ativas.remove(self)
+    def on_close(self): # Remove o usuário do conjunto quando ele é desconectado
+        clientes_conectados.remove(self)
         print("Usuário desconectado.")
 
     # Permite acesso local
-    # O Tornado bloqueia conexões de origem diferente por padrão
-    # Retornamos True para permitir conexões de qualquer origem para facilitar os testes
-    def check_origin(self, origin):
-        return True
+    def check_origin(self, origin): # Medida de segurança do Tornado - bloqueia conexões de origem diferente por padrão
+        return True # Retornamos True para permitir conexões de qualquer origem para facilitar os testes
 
-def make_app():
+def configurar_servidor():
     # Obtém o caminho da pasta onde o server.py está localizado
     caminho_projeto = os.path.dirname(os.path.abspath(__file__))
     
     # Diz qual código será executado para cada URL que o usuário acessar
     return tornado.web.Application([
-        (r"/", ClienteHandler),        
-        (r"/cliente", ClienteHandler), 
-        (r"/oficina", OficinaHandler),
-        (r"/ws", AutoConnectHandler),
-        (r"/(.*)", tornado.web.StaticFileHandler, {"path": caminho_projeto}),
+        (r"/", PaginaCliente),        
+        (r"/cliente", PaginaCliente), 
+        (r"/oficina", PaginaOficina),
+        (r"/ws", AutoConnectWebSocket),
+        (r"/(.*)", tornado.web.StaticFileHandler, {"path": caminho_projeto}), # serve para o servidor carregar as imagens
     ], template_path=caminho_projeto, debug=True)
 
 if __name__ == "__main__": # Execução do servidor
-    app = make_app()
+    app = configurar_servidor()
     app.listen(8888)
     print("🚗 Servidor AutoConnect rodando na porta 8888...")
     print("👉 Cliente: http://localhost:8888/cliente")
